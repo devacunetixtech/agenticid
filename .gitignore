@@ -1,0 +1,10 @@
+node_modules
+.next
+.next-build
+out
+coverage
+npm-debug.log*
+.env
+.DS_Store
+Acunetix BOTChain Integration Guide.md
+AgenticID_Pitch_Deck.pdf
