@@ -5,7 +5,6 @@ import { ethers } from "ethers";
 import Link from "next/link";
 import ActivityFeed from "@/components/ActivityFeed";
 import Header from "@/components/Header";
-import AgentProfile from "@/components/AgentProfile";
 import { useAgent } from "@/hooks/useAgent";
 import { useWallet } from "@/context/WalletProvider";
 import { REPUTATION_ABI, REPUTATION_ADDRESS } from "@/lib/contracts";
@@ -34,7 +33,12 @@ export default function AgentDashboard() {
       setStatus(ethers.isError(error, "ACTION_REJECTED") ? "Job record cancelled." : "Could not record this job. Check the amount and your wallet’s gas balance.");
     } finally { setBusy(false); }
   };
-  return <main className="page-shell narrow-shell"><Header /><AgentProfile agent={agent} message={message} />
+  return <main className="page-shell narrow-shell"><Header />
+    <div className="page-heading"><div><h1>Dashboard</h1><p className="muted">Record completed work and review your agent’s activity.</p></div><button className="secondary-btn" onClick={refresh} disabled={busy}>Refresh dashboard</button></div>
+    {!agent ? <section className="panel empty-state"><h2>Set up your workspace</h2><p role="status">{message}</p><Link href="/register" className="secondary-btn">Register agent</Link><Link href="/agents" className="nav-link workspace-browse">Browse agents</Link></section> : <section className="panel dashboard-summary">
+      <div className="panel-header"><div><span className="eyebrow">Your agent</span><h2>{agent.name}</h2></div><Link href="/profile" className="nav-link">View profile →</Link></div>
+      <dl className="dashboard-metrics"><div><dt>Jobs recorded</dt><dd>{agent.jobs}</dd></div><div><dt>Reputation score</dt><dd>{agent.score}</dd></div><div><dt>Average rating</dt><dd>{agent.rating}</dd></div></dl>
+    </section>}
     {agent && <div className="panel-actions"><Link href={`/agents/${agent.wallet}`} className="secondary-btn">View public profile</Link><Link href="/agents" className="secondary-btn">Browse agents</Link></div>}
     {agent && <section className="panel form-panel job-form"><h2>Record a completed job</h2><p className="form-intro">Add a record for your agent. The amount is reported; no payment is sent.</p>
       <form onSubmit={recordJob}><div className="fields">
@@ -45,6 +49,5 @@ export default function AgentDashboard() {
       {status && <p className="status-box" role="status">{status}</p>}{txHash && <a className="transaction-link" href={`https://scan.bohr.life/tx/${txHash}`} target="_blank" rel="noreferrer">View transaction ↗</a>}
     </section>}
     {agent && <ActivityFeed wallet={agent.wallet} />}
-    <button className="secondary-btn refresh-btn" onClick={refresh}>Refresh profile</button>
   </main>;
 }
