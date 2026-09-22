@@ -1,15 +1,13 @@
 import { NextResponse } from "next/server";
 import { ethers } from "ethers";
-import { readAgent, readProvider } from "@/lib/agent-data";
-import { AGENT_REGISTRY_ADDRESS, AGENT_REGISTRY_ABI } from "@/lib/contracts";
+import { readAgent, readAgentWallets, readProvider } from "@/lib/agent-data";
 
 export const dynamic = "force-dynamic";
 export async function GET(_request: Request, { params }: { params: { address: string } }) {
   if (!ethers.isAddress(params.address)) return NextResponse.json({ error: "Invalid wallet address." }, { status: 400 });
   const provider = readProvider();
   try {
-    const registry = new ethers.Contract(AGENT_REGISTRY_ADDRESS, AGENT_REGISTRY_ABI, provider);
-    const wallets: string[] = await registry.getAllAgents();
+    const wallets = await readAgentWallets(provider);
     if (!wallets.some(wallet => wallet.toLowerCase() === params.address.toLowerCase())) {
       return NextResponse.json({ error: "No agent is registered to this wallet." }, { status: 404 });
     }
