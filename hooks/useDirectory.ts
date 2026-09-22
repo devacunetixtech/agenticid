@@ -11,12 +11,23 @@ export function useDirectory() {
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true); setError("");
-    fetch("/api/agents", { signal: controller.signal }).then(async response => {
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error);
-      setAgents(data.agents);
-    }).catch(error => { if (!controller.signal.aborted) setError(error.message || "Could not load agents."); })
-      .finally(() => { if (!controller.signal.aborted) setLoading(false); });
+    (async () => {
+      let lastError: unknown;
+      for (let attempt = 0; attempt < 3; attempt += 1) {
+        try {
+          const response = await fetch("/api/agents", { signal: controller.signal });
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.error);
+          setAgents(data.agents);
+          return;
+        } catch (error) {
+          if (controller.signal.aborted) return;
+          lastError = error;
+          if (attempt < 2) await new Promise(resolve => setTimeout(resolve, 400 * (attempt + 1)));
+        }
+      }
+      setError(lastError instanceof Error ? lastError.message : "Could not load agents.");
+    })().finally(() => { if (!controller.signal.aborted) setLoading(false); });
     return () => controller.abort();
   }, [revision]);
   return { agents, loading, error, refresh };

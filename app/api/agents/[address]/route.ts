@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { readAgent, readAgentWallets, readProvider } from "@/lib/agent-data";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 30;
 export async function GET(_request: Request, { params }: { params: { address: string } }) {
   if (!ethers.isAddress(params.address)) return NextResponse.json({ error: "Invalid wallet address." }, { status: 400 });
   const provider = readProvider();
@@ -12,7 +13,8 @@ export async function GET(_request: Request, { params }: { params: { address: st
       return NextResponse.json({ error: "No agent is registered to this wallet." }, { status: 404 });
     }
     return NextResponse.json({ agent: await readAgent(provider, params.address) });
-  } catch {
+  } catch (error) {
+    console.error("[api/agents/:address] Mainnet profile read failed", error);
     return NextResponse.json({ error: "Could not load this agent. Please try again." }, { status: 503 });
   } finally { provider.destroy(); }
 }

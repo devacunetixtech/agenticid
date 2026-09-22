@@ -13,36 +13,49 @@ export type Agent = {
   registered: string; jobs: string; earnings: string; score: string; rating: string;
 };
 
-export function readProvider() {
-  const createProvider = (url: string) => {
-    const request = new ethers.FetchRequest(url);
-    request.timeout = 8000;
-    return new ethers.JsonRpcProvider(request, 677, { staticNetwork: true, batchMaxCount: 1 });
-  };
-  const primary = createProvider(process.env.BOTCHAIN_MAINNET_RPC_URL || "https://rpc.botchain.ai");
-  const fallback = createProvider(process.env.BOTCHAIN_MAINNET_FALLBACK_RPC_URL || "https://scan.botchain.ai/api/eth-rpc");
-  return new ethers.FallbackProvider([
-    { provider: primary, priority: 1, stallTimeout: 750, weight: 1 },
-    { provider: fallback, priority: 2, stallTimeout: 750, weight: 1 },
-  ], 677, { quorum: 1 });
+type RpcResponse = { result?: unknown; error?: { message?: string } };
+type MulticallResult = { returnData: string };
+
+async function requestRpcEndpoint(url: string, method: string, params: Array<any> | Record<string, any>) {
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params }),
+    cache: "no-store",
+    signal: AbortSignal.timeout(2500),
+  });
+  if (!response.ok) throw new Error(`RPC request failed with HTTP ${response.status}.`);
+  const payload = await response.json() as RpcResponse;
+  if (payload.error) throw new Error(payload.error.message || "RPC request failed.");
+  if (payload.result === undefined) throw new Error("RPC response did not include a result.");
+  return payload.result;
 }
 
-async function retryRpc<T>(operation: () => Promise<T>) {
-  let lastError: unknown;
-  for (let attempt = 0; attempt < 3; attempt += 1) {
-    try {
-      return await operation();
-    } catch (error) {
-      lastError = error;
-      if (attempt < 2) await new Promise(resolve => setTimeout(resolve, 250 * (attempt + 1)));
-    }
-  }
-  throw lastError;
+export function readProvider() {
+  const endpoints = [
+    process.env.BOTCHAIN_MAINNET_RPC_URL || "https://rpc.botchain.ai",
+    process.env.BOTCHAIN_MAINNET_FALLBACK_RPC_URL || "https://scan.botchain.ai/api/eth-rpc",
+  ];
+  const transport = {
+    request: async ({ method, params = [] }: { method: string; params?: Array<any> | Record<string, any> }) => {
+      let lastError: unknown;
+      for (let attempt = 0; attempt < 3; attempt += 1) {
+        try {
+          return await Promise.any(endpoints.map(endpoint => requestRpcEndpoint(endpoint, method, params)));
+        } catch (error) {
+          lastError = error;
+          if (attempt < 2) await new Promise(resolve => setTimeout(resolve, 200 * (attempt + 1)));
+        }
+      }
+      throw lastError;
+    },
+  };
+  return new ethers.BrowserProvider(transport, 677, { staticNetwork: true, polling: false });
 }
 
 export async function readAgentWallets(provider: ethers.Provider) {
   const registry = new ethers.Contract(AGENT_REGISTRY_ADDRESS, AGENT_REGISTRY_ABI, provider);
-  return retryRpc(async () => Array.from(await registry.getAllAgents()) as string[]);
+  return Array.from(await registry.getAllAgents()) as string[];
 }
 
 function agentCalls(wallet: string) {
@@ -57,10 +70,10 @@ function agentCalls(wallet: string) {
 
 async function readCallResults(provider: ethers.Provider, wallets: string[]) {
   const multicall = new ethers.Contract(MULTICALL3_ADDRESS, MULTICALL3_ABI, provider);
-  return retryRpc(async () => Array.from(await multicall.aggregate3.staticCall(wallets.flatMap(agentCalls))));
+  return Array.from(await multicall.aggregate3.staticCall(wallets.flatMap(agentCalls))) as MulticallResult[];
 }
 
-function decodeAgent(wallet: string, results: any[]): Agent {
+function decodeAgent(wallet: string, results: MulticallResult[]): Agent {
   const [profile] = registryInterface.decodeFunctionResult("getAgent", results[0].returnData);
   const [jobs] = reputationInterface.decodeFunctionResult("getCompletedJobs", results[1].returnData);
   const [earnings] = reputationInterface.decodeFunctionResult("getTotalEarnings", results[2].returnData);
