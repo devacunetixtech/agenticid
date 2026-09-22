@@ -9,7 +9,9 @@
     "lint": "next lint",
     "compile": "hardhat compile",
     "test": "hardhat test",
-    "deploy:testnet": "hardhat run scripts/deploy.js --network botchainTestnet"
+    "deploy:testnet": "hardhat run scripts/deploy.js --network botchainTestnet",
+    "deploy:mainnet": "hardhat run scripts/deploy.js --network botchainMainnet",
+    "interact:mainnet": "hardhat run scripts/interact-mainnet.js --network botchainMainnet"
   },
   "dependencies": {
     "next": "14.2.15",

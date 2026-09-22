@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Activity } from "@/lib/activity-data";
-import { formatAddress } from "@/lib/contracts";
+import { BOT_CHAIN_EXPLORER_URL, formatAddress } from "@/lib/contracts";
 
 export default function ActivityFeed({ wallet }: { wallet?: string }) {
   const [items, setItems] = useState<Activity[]>([]);
@@ -38,7 +38,7 @@ export default function ActivityFeed({ wallet }: { wallet?: string }) {
       <Link href={`/agents/${item.wallet}`} className="wallet">{formatAddress(item.wallet)}</Link>
       {item.amount && <p className="muted">Reported amount: {item.amount} native tokens</p>}
       {item.feedback && <p className="profile-description">{item.feedback}</p>}
-      <div className="activity-meta"><span>Block {item.block.toLocaleString()}</span><a href={`https://scan.bohr.life/tx/${item.transaction}`} target="_blank" rel="noreferrer">View transaction ↗</a></div>
+      <div className="activity-meta"><span>Block {item.block.toLocaleString()}</span><a href={`${BOT_CHAIN_EXPLORER_URL}/tx/${item.transaction}`} target="_blank" rel="noreferrer">View transaction ↗</a></div>
     </li>)}</ol>}
     {loading && <p className="form-intro" role="status">Loading activity…</p>}
     {error && <div role="alert"><p className="form-intro">{error}</p><button className="secondary-btn" onClick={() => load(range && nextCursor !== null ? nextCursor : undefined)}>Try again</button></div>}

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { useWallet } from "@/context/WalletProvider";
-import { AGENT_REGISTRY_ABI, AGENT_REGISTRY_ADDRESS } from "@/lib/contracts";
+import { AGENT_REGISTRY_ABI, AGENT_REGISTRY_ADDRESS, BOT_CHAIN_ID, BOT_CHAIN_NAME } from "@/lib/contracts";
 
 import type { Agent } from "@/lib/agent-data";
 import { readAgent } from "@/lib/agent-data";
@@ -18,7 +18,7 @@ export function useAgent() {
     let cancelled = false;
     setAgent(null);
     if (!address || !provider) { setMessage("Connect your wallet to view your agent."); return; }
-    if (chainId !== 968) { setMessage("Switch your wallet to BOT Chain Testnet (968)."); return; }
+    if (chainId !== BOT_CHAIN_ID) { setMessage(`Switch your wallet to ${BOT_CHAIN_NAME} (${BOT_CHAIN_ID}).`); return; }
     setMessage("Loading your profile…");
     (async () => {
       const registry = new ethers.Contract(AGENT_REGISTRY_ADDRESS, AGENT_REGISTRY_ABI, provider);

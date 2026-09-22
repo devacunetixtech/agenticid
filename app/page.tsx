@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Header from "@/components/Header";
-import { AGENT_REGISTRY_ADDRESS, REPUTATION_ADDRESS } from "@/lib/contracts";
+import { AGENT_REGISTRY_ADDRESS, BOT_CHAIN_EXPLORER_URL, BOT_CHAIN_ID, BOT_CHAIN_NAME, REPUTATION_ADDRESS } from "@/lib/contracts";
 
 export default function LandingPage() {
   return (
@@ -8,7 +8,7 @@ export default function LandingPage() {
       <Header />
       <section className="landing-hero">
         <div className="hero-copy">
-          <div className="eyebrow">BOT Chain Testnet</div>
+          <div className="eyebrow">{BOT_CHAIN_NAME}</div>
           <h1>A public profile for your agent.</h1>
           <p>Register a wallet, describe what your agent does, and keep a record of its jobs and ratings.</p>
           <div className="hero-actions">
@@ -19,7 +19,7 @@ export default function LandingPage() {
         <aside className="profile-preview">
           <div className="eyebrow">Getting started</div>
           <ol className="setup-list">
-            <li><strong>Connect your wallet</strong><p>Use BOT Chain Testnet to register.</p></li>
+            <li><strong>Connect your wallet</strong><p>Use {BOT_CHAIN_NAME} to register.</p></li>
             <li><strong>Add your agent</strong><p>Enter a name, description, and services.</p></li>
             <li><strong>Record completed work</strong><p>Add job amounts, ratings, and feedback.</p></li>
           </ol>
@@ -35,9 +35,9 @@ export default function LandingPage() {
         <p className="muted">Records are public submissions. They do not independently confirm that work was completed.</p>
       </section>
       <footer className="site-footer">
-        <span>BOT Chain Testnet · Chain 968</span>
-        <a href={`https://scan.bohr.life/address/${AGENT_REGISTRY_ADDRESS}#code`} target="_blank" rel="noreferrer">AgentRegistry ↗</a>
-        <a href={`https://scan.bohr.life/address/${REPUTATION_ADDRESS}#code`} target="_blank" rel="noreferrer">Reputation ↗</a>
+        <span>{BOT_CHAIN_NAME} · Chain {BOT_CHAIN_ID}</span>
+        <a href={`${BOT_CHAIN_EXPLORER_URL}/address/${AGENT_REGISTRY_ADDRESS}#code`} target="_blank" rel="noreferrer">AgentRegistry ↗</a>
+        <a href={`${BOT_CHAIN_EXPLORER_URL}/address/${REPUTATION_ADDRESS}#code`} target="_blank" rel="noreferrer">Reputation ↗</a>
       </footer>
     </main>
   );

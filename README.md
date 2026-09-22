@@ -21,7 +21,7 @@ AgenticID is an on-chain reputation identity layer for AI agents. Agents can reg
 - Solidity smart contracts
 - Hardhat development environment
 - Next.js + TypeScript + React
-- BOT Chain testnet deployment support
+- BOT Chain mainnet and testnet deployment support
 
 ## Project structure
 
@@ -63,7 +63,7 @@ This keeps the scoring model simple, auditable, and easy to explain.
 
 ## Local development
 
-Public pages read BOT Chain Testnet through server API routes using `BOTCHAIN_TESTNET_RPC_URL`. Browsing does not require a wallet. Registration and job submissions require a connected wallet on chain 968. Activity loads 10,000 blocks at a time; use **Load older blocks** to inspect earlier records.
+Public pages read BOT Chain Mainnet through server API routes using `BOTCHAIN_MAINNET_RPC_URL`. Browsing does not require a wallet. Registration and job submissions require a connected wallet on chain 677. Activity loads 10,000 blocks at a time; use **Load older blocks** to inspect earlier records.
 
 The deployed registry does not support editing profiles. Job records and ratings are public submissions, and reported amounts do not transfer payment.
 
@@ -99,23 +99,28 @@ npm run dev
 
 ## BOT Chain deployment
 
-Configure your environment in `.env` and use the BOT Chain testnet settings:
+Current mainnet deployment:
 
-- RPC: https://rpc.bohr.life
-- Chain ID: 968
-- Explorer: https://scan.bohr.life/
+- AgentRegistry: `0x31CD496289C768aa32087871372BB5FCD29dD5b3`
+- Reputation: `0x7F3E64F7504a02651401222a044DAeF8e09Ca68a`
+
+Configure your environment in `.env` and use the BOT Chain mainnet settings:
+
+- RPC: https://rpc.botchain.ai
+- Chain ID: 677
+- Explorer: https://scan.botchain.ai/
 
 Example:
 
 ```bash
-export BOTCHAIN_TESTNET_RPC_URL=https://rpc.bohr.life
+export BOTCHAIN_MAINNET_RPC_URL=https://rpc.botchain.ai
 export PRIVATE_KEY=your_private_key
 ```
 
 Then run:
 
 ```bash
-npx hardhat run scripts/deploy.js --network botchainTestnet
+npm run deploy:mainnet
 ```
 
 ## Verification and security
@@ -123,11 +128,11 @@ npx hardhat run scripts/deploy.js --network botchainTestnet
 Set `BLOCKSCOUT_API_KEY` in `.env`, then verify each address printed by the deployment script:
 
 ```bash
-npx hardhat verify --network botchainTestnet <AgentRegistry-address>
-npx hardhat verify --network botchainTestnet <Reputation-address>
+npx hardhat verify --network botchainMainnet <AgentRegistry-address>
+npx hardhat verify --network botchainMainnet <Reputation-address>
 ```
 
-Both contracts have no constructor arguments. Verification uses the BOT Chain testnet Blockscout explorer at https://scan.bohr.life/.
+Both contracts have no constructor arguments. Verification uses the BOT Chain mainnet explorer at https://scan.botchain.ai/.
 
 - Use a secure wallet for deployment
 - Never commit private keys

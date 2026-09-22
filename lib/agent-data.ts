@@ -7,9 +7,9 @@ export type Agent = {
 };
 
 export function readProvider() {
-  const request = new ethers.FetchRequest(process.env.BOTCHAIN_TESTNET_RPC_URL || "https://rpc.bohr.life");
+  const request = new ethers.FetchRequest(process.env.BOTCHAIN_MAINNET_RPC_URL || "https://rpc.botchain.ai");
   request.timeout = 20000;
-  return new ethers.JsonRpcProvider(request, 968, { staticNetwork: true, batchMaxCount: 1 });
+  return new ethers.JsonRpcProvider(request, 677, { staticNetwork: true, batchMaxCount: 1 });
 }
 
 export async function readAgent(provider: ethers.Provider, wallet: string): Promise<Agent> {

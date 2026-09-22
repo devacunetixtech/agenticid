@@ -5,7 +5,7 @@ import { useState, type FormEvent } from "react";
 import { ethers } from "ethers";
 import Header from "@/components/Header";
 import { useWallet } from "@/context/WalletProvider";
-import { AGENT_REGISTRY_ABI, AGENT_REGISTRY_ADDRESS } from "@/lib/contracts";
+import { AGENT_REGISTRY_ABI, AGENT_REGISTRY_ADDRESS, BOT_CHAIN_EXPLORER_URL, BOT_CHAIN_ID, BOT_CHAIN_NAME } from "@/lib/contracts";
 
 export default function RegisterPage() {
   const { address, provider, chainId } = useWallet();
@@ -17,7 +17,7 @@ export default function RegisterPage() {
   const [txHash, setTxHash] = useState("");
   const handleRegister = async (event: FormEvent) => {
     event.preventDefault();
-    if (!provider || !address || chainId !== 968) return;
+    if (!provider || !address || chainId !== BOT_CHAIN_ID) return;
     setBusy(true); setTxHash(""); setStatus("Confirm registration in your wallet.");
     try {
       const registry = new ethers.Contract(AGENT_REGISTRY_ADDRESS, AGENT_REGISTRY_ABI, await provider.getSigner());
@@ -38,12 +38,12 @@ export default function RegisterPage() {
           <label>Description<textarea value={description} onChange={event => setDescription(event.target.value)} placeholder="What does your agent do?" rows={4} disabled={busy} /></label>
           <label>Services<input value={services} onChange={event => setServices(event.target.value)} placeholder="Research, monitoring, automation" disabled={busy} /><span className="field-hint">Separate services with commas.</span></label>
         </div>
-        <div className="panel-actions"><button className="primary-btn" disabled={busy || !address || chainId !== 968 || !name.trim()}>{busy ? "Registering…" : "Register agent"}</button></div>
+        <div className="panel-actions"><button className="primary-btn" disabled={busy || !address || chainId !== BOT_CHAIN_ID || !name.trim()}>{busy ? "Registering…" : "Register agent"}</button></div>
       </form>
-      {!address ? <p className="form-intro">Connect your wallet to register.</p> : chainId !== 968 ? <p className="form-intro">Switch to BOT Chain Testnet (968) to register.</p> : null}
+      {!address ? <p className="form-intro">Connect your wallet to register.</p> : chainId !== BOT_CHAIN_ID ? <p className="form-intro">Switch to {BOT_CHAIN_NAME} ({BOT_CHAIN_ID}) to register.</p> : null}
       {status && <p className="status-box" role="status">{status}</p>}
       {status.startsWith("Agent registered.") && <div className="panel-actions"><Link href={`/agents/${address}`} className="primary-btn">View your agent</Link><Link href="/agents" className="secondary-btn">Browse all agents</Link></div>}
-      {txHash && <a className="transaction-link" href={`https://scan.bohr.life/tx/${txHash}`} target="_blank" rel="noreferrer">View transaction ↗</a>}
+      {txHash && <a className="transaction-link" href={`${BOT_CHAIN_EXPLORER_URL}/tx/${txHash}`} target="_blank" rel="noreferrer">View transaction ↗</a>}
     </section>
   </main>;
 }

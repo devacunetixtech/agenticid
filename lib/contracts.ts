@@ -1,7 +1,10 @@
 import { ethers } from "ethers";
 
-export const AGENT_REGISTRY_ADDRESS = "0x0a44d98c8ef8bc7635753bbdf1e71707d1e98f7f";
-export const REPUTATION_ADDRESS = "0x4d8556f933142500fabccf7148a8b66529e8930c";
+export const BOT_CHAIN_ID = 677;
+export const BOT_CHAIN_NAME = "BOT Chain Mainnet";
+export const BOT_CHAIN_EXPLORER_URL = "https://scan.botchain.ai";
+export const AGENT_REGISTRY_ADDRESS = "0x31CD496289C768aa32087871372BB5FCD29dD5b3";
+export const REPUTATION_ADDRESS = "0x7F3E64F7504a02651401222a044DAeF8e09Ca68a";
 
 export const AGENT_REGISTRY_ABI = [
   "function registerAgent(string _name, address _wallet, string _description, string[] _services)",

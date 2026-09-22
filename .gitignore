@@ -5,6 +5,7 @@ out
 coverage
 npm-debug.log*
 .env
+.mainnet-interaction-wallets.json
 .DS_Store
 Acunetix BOTChain Integration Guide.md
 AgenticID_Pitch_Deck.pdf
