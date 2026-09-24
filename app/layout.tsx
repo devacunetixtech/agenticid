@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Footer from "@/components/Footer";
 import { WalletProvider } from "@/context/WalletProvider";
 import "./globals.css";
 
@@ -29,7 +30,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        <WalletProvider>{children}</WalletProvider>
+        <WalletProvider>
+          {children}
+          <Footer />
+        </WalletProvider>
       </body>
     </html>
   );

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Header from "@/components/Header";
-import { AGENT_REGISTRY_ADDRESS, BOT_CHAIN_EXPLORER_URL, BOT_CHAIN_ID, BOT_CHAIN_NAME, REPUTATION_ADDRESS } from "@/lib/contracts";
+import { BOT_CHAIN_NAME } from "@/lib/contracts";
 
 export default function LandingPage() {
   return (
@@ -34,11 +34,6 @@ export default function LandingPage() {
         </dl>
         <p className="muted">Records are public submissions. They do not independently confirm that work was completed.</p>
       </section>
-      <footer className="site-footer">
-        <span>{BOT_CHAIN_NAME} · Chain {BOT_CHAIN_ID}</span>
-        <a href={`${BOT_CHAIN_EXPLORER_URL}/address/${AGENT_REGISTRY_ADDRESS}#code`} target="_blank" rel="noreferrer">AgentRegistry ↗</a>
-        <a href={`${BOT_CHAIN_EXPLORER_URL}/address/${REPUTATION_ADDRESS}#code`} target="_blank" rel="noreferrer">Reputation ↗</a>
-      </footer>
     </main>
   );
 }

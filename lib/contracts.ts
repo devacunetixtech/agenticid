@@ -2,6 +2,7 @@ import { ethers } from "ethers";
 
 export const BOT_CHAIN_ID = 677;
 export const BOT_CHAIN_NAME = "BOT Chain Mainnet";
+export const BOT_CHAIN_URL = "https://botchain.ai";
 export const BOT_CHAIN_EXPLORER_URL = "https://scan.botchain.ai";
 export const AGENT_REGISTRY_ADDRESS = "0x31CD496289C768aa32087871372BB5FCD29dD5b3";
 export const REPUTATION_ADDRESS = "0x7F3E64F7504a02651401222a044DAeF8e09Ca68a";

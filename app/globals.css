@@ -20,6 +20,9 @@ html {
 
 body {
   margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   font-family: Arial, Helvetica, sans-serif;
   background: transparent;
   color: var(--text);
@@ -27,6 +30,11 @@ body {
 
 button {
   font: inherit;
+}
+
+body > main {
+  flex: 1;
+  width: 100%;
 }
 
 .page-shell {
@@ -607,7 +615,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
 .muted, .form-intro, .field-hint { color: var(--muted); line-height: 1.6; }
 .form-intro { margin: 12px 0 24px; }
 .field-hint { font-size: 0.85rem; font-weight: 400; }
-.site-footer { display: flex; flex-wrap: wrap; gap: 24px; border-top: 1px solid var(--border); margin-top: 60px; padding-top: 24px; color: var(--muted); font-size: 0.85rem; }
+.site-footer { width: calc(100% - 48px); max-width: 1152px; display: flex; flex-wrap: wrap; gap: 24px; border-top: 1px solid var(--border); margin: 0 auto; padding: 24px 0 32px; color: var(--muted); font-size: 0.85rem; }
 .site-footer a, .transaction-link { color: var(--gold); text-decoration: none; }
 .transaction-link { display: inline-block; margin-top: 16px; }
 .profile-description { color: var(--muted); line-height: 1.7; margin-top: 12px; white-space: pre-wrap; }
